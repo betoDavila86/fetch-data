@@ -1,53 +1,24 @@
 import React, { Component } from 'react';
-
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
-import axios from 'axios'
 import './Blog.css';
+import Posts from './Posts/Posts'
+import NewPost from './NewPost/NewPost'
+import { Route } from 'react-router-dom'
 
 class Blog extends Component {
-    state = {
-        posts: [],
-        post: null,
-        error: false,
-    };
-
-    componentDidMount() {
-        axios.get('/posts')
-            .then(response => {
-                const posts = response.data.slice(0, 4);
-                const updatedPosts = posts.map(post => {
-                    return {
-                        ...post,
-                        author: 'Beto'
-                    }
-                })
-                this.setState({ posts: updatedPosts })
-            })
-            .catch(error => this.setState({ error: true }))
-    }
-
-    handleOutputSelectedPost = (id) => {
-        this.setState({ post: id })
-    }
 
     render() {
-        const { state: { posts, post, error }, handleOutputSelectedPost } = this;
-        const postsOutput = posts.map((post) => <Post onOutputPost={() => handleOutputSelectedPost(post.id)} key={post.id} title={post.title} author={post.author} />)
-
         return (
             <div>
-                {!error && <section className="Posts">
-                    {postsOutput}
-                </section>}
-                {!error && <section>
-                    <FullPost id={post} />
-                </section>}
-                {error && <p style={{textAlign: 'center'}}>Something went wrong! :(</p>}
-                <section>
-                    <NewPost />
-                </section>
+                <header>
+                    <nav>
+                        <ul className="list-links">
+                            <li className="list-item"><a className="link" href="/">Home</a></li>
+                            <li className="list-item"><a className="link" href="/new-post">New Post</a></li>
+                        </ul>
+                    </nav>
+                </header>
+                <Route path="/" exact component={Posts} />
+                <Route path="/new-post" component={NewPost} />
             </div>
         );
     }
